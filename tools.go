@@ -15,7 +15,8 @@ func sanatize(filepath string, configuration Configuration) (bool) {
 	
 	flag := true
 	
-	// If it matches put the flag to false, since it's not sane to use
+	// If it matches put the flag to false, since it's not allowed  to use
+	// fixme: this should be replaced by a regex solution
 	for _,item := range  configuration.Ignoresuffix {
 		if strings.HasSuffix(filepath, item){ 
 		flag = false
@@ -69,8 +70,7 @@ func sendemail(configuration Configuration, hashdata Hashdata) {
 	message.SetHeader("To", addr...)
 	message.SetHeader("Subject", mail.Subject)
 	message.SetBody("text/html", mail.Body)
-	//m.Attach("/home/Alex/lolcat.jpg")
-	fmt.Println(message)
+	debugerr("Email: ", message, configuration)
 	dialer := gomail.Dialer{ Host: configuration.Smtp, Port: configuration.Smtpport, SSL: false }
 	dialer.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	if err := dialer.DialAndSend(message); err != nil {
