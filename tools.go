@@ -49,16 +49,17 @@ func sendemail(configuration Configuration, hashdata Hashdata) {
 	}else if hashdata.Event == "notify.Rename" {
 		event = "Renamed"
 	}else if hashdata.Event == "notify.Write" {
-		event = "Written"
+		event = "Write"
+	}else if hashdata.Event == "syslog" {
+		event = "Log"
 	}
        
 	
-	mail.Sender = "abe@grid6.io"
+	mail.Sender = configuration.Sender
 	mail.To =  hashdata.Notify
-	mail.Subject = "Abe filesystem warning"
+	mail.Subject = configuration.Subject
 	mail.Body = "This the Abe system to inform you about the following incident:\n" +
-	"The system noticed that " + hashdata.Filename + " had the following event: " +
-	event + "."
+	"The system noticed a " + event + " event.\n" + "Output: " + hashdata.Filename
 
 	message := gomail.NewMessage()
 	message.SetHeader("From", mail.Sender)
@@ -69,7 +70,7 @@ func sendemail(configuration Configuration, hashdata Hashdata) {
 	} 
 	message.SetHeader("To", addr...)
 	message.SetHeader("Subject", mail.Subject)
-	message.SetBody("text/html", mail.Body)
+	message.SetBody("text/plain", mail.Body)
 	debugerr("Email: ", message, configuration)
 	dialer := gomail.Dialer{ Host: configuration.Smtp, Port: configuration.Smtpport, SSL: false }
 	dialer.TLSConfig = &tls.Config{InsecureSkipVerify: true}

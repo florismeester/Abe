@@ -59,6 +59,9 @@ func main(){
 
         if configuration.Server == false {
                 go publisher(configuration)
+		for _,item := range  configuration.Logfiles{
+			go taillogs(item, configuration)
+		}
         }
 	
 	// If index is true, start indexing the files recursively

@@ -80,17 +80,18 @@ func subscriber (configuration Configuration){
                 mess, err := subscriber.RecvBytes(0)
                 printerr(err)
 		
-                debugerr("receiver:", mess, configuration)
+                debugerr("receiver:", string(mess), configuration)
 		
 		// Unmarshall the message in a struct 
         	err = json.Unmarshal(mess, &hashdata)
                 if err := validator.Validate(hashdata); err != nil {
                         printerr(err)
-                } else if (hashdata.Event == "notify.InAttrib" ||  hashdata.Event == "notify.Remove" || hashdata.Hash == "") {
+                } else if (hashdata.Event == "notify.InAttrib" ||  hashdata.Event == "notify.Remove" || hashdata.Event == "syslog" || hashdata.Hash == "") {
 			if configuration.Debug == true {
 				fmt.Println("receiver Event", hashdata.Event, hashdata.Filename)
 			}
 			// just send a notification, no persistence
+			fmt.Println("attrib or log:" + hashdata.Filename)
 			sendemail(configuration, hashdata)
 		}else {
                        	// If validated marshal and commit

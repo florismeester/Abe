@@ -36,9 +36,13 @@ type Configuration struct {
 	Debug bool
 	Destructive bool
 	Notify string
+	Sender string
+	Subject string
 	Smtp string
 	Smtpport int
 	Server bool
+	Logfiles []string
+	Logfilter []string
 }
 
 
