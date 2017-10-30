@@ -5,29 +5,34 @@ package main
 
 import (
 	"strings"
-	"fmt"
+//	"fmt"
 	"gopkg.in/gomail.v2"
 	"crypto/tls"
+	"regexp"
 )
 
-// Test for suffixes or prefixes to ignore
+// Test for suffixes or filters to ignore
 func sanatize(filepath string, configuration Configuration) (bool) {
 	
 	flag := true
 	
 	// If it matches put the flag to false, since it's not allowed  to use
 	// fixme: this should be replaced by a regex solution
-	for _,item := range  configuration.Ignoresuffix {
+	for _,item := range  configuration.Suffixes {
 		if strings.HasSuffix(filepath, item){ 
-		flag = false
-		fmt.Println("suffix matches", item)
+			flag = false
+			debugerr("suffix matches", item, configuration)
 		}
 	}
-        for _,item := range  configuration.Ignoreprefix {
-		if strings.HasPrefix(filepath, item){
-		flag = false
-		fmt.Println("prefix matches", item)
-		}
+        for _,item := range  configuration.Filters {
+		 matched, err := regexp.MatchString(".*" + item + ".*", filepath)
+		 if err != nil{
+			printerr(err)
+		 }
+		 if matched == true {
+			flag = false
+			debugerr("filter matches", item, configuration)
+		 }
 	}
 	return flag
 	
@@ -41,23 +46,23 @@ func sendemail(configuration Configuration, hashdata Hashdata) {
 	var mail Mail
 	var event string
 	if hashdata.Event == "notify.Remove" {
-		event = "Removed"
+		event = "Remove"
 	} else if  hashdata.Event == "notify.InAttrib" {
 		event = "Atributes changed"
 	} else if hashdata.Event == "notify.Create" {
-		event  = "Created"
-	}else if hashdata.Event == "notify.Rename" {
-		event = "Renamed"
-	}else if hashdata.Event == "notify.Write" {
+		event  = "Create"
+	} else if hashdata.Event == "notify.Rename" {
+		event = "Rename"
+	} else if hashdata.Event == "notify.Write" {
 		event = "Write"
-	}else if hashdata.Event == "syslog" {
+	} else if hashdata.Event == "syslog" {
 		event = "Log"
 	}
        
 	
-	mail.Sender = configuration.Sender
+	mail.Sender = configuration.Server.Sender
 	mail.To =  hashdata.Notify
-	mail.Subject = configuration.Subject
+	mail.Subject = configuration.Server.Subject
 	mail.Body = "This the Abe system to inform you about the following incident:\n" +
 	"The system noticed a " + event + " event.\n" + "Output: " + hashdata.Filename
 
@@ -72,7 +77,7 @@ func sendemail(configuration Configuration, hashdata Hashdata) {
 	message.SetHeader("Subject", mail.Subject)
 	message.SetBody("text/plain", mail.Body)
 	debugerr("Email: ", message, configuration)
-	dialer := gomail.Dialer{ Host: configuration.Smtp, Port: configuration.Smtpport, SSL: false }
+	dialer := gomail.Dialer{ Host: configuration.Server.Smtp, Port: configuration.Server.Smtpport, SSL: false }
 	dialer.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	if err := dialer.DialAndSend(message); err != nil {
     		printerr(err)

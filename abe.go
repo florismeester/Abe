@@ -46,29 +46,28 @@ func main(){
 	var wg sync.WaitGroup
 
 	// Set the global hostid variable, this should be unique within a network
-	tablename = configuration.Tablename
+	tablename = configuration.Server.Tablename
 
         // Start the zmq authentication engine
         startauth(configuration)
         // Add routines
         wg.Add(1)
         // Start the routines
-        if configuration.Server {
+        if configuration.Servermode {
                 go subscriber(configuration)
         }
 
-        if configuration.Server == false {
+        if configuration.Servermode == false {
                 go publisher(configuration)
 		for _,item := range  configuration.Logfiles{
 			go taillogs(item, configuration)
 		}
         }
-	
+
 	// If index is true, start indexing the files recursively
 	if *index {
-
 		files := []string{}
-		for _,dir := range configuration.Paths { 
+		for _,dir := range configuration.Directories { 
 			err := filepath.Walk(dir, func(path string, f os.FileInfo, err error) error{
 				if !sanatize(path, configuration){
 					debugerr("ignored path is:", path, configuration)
@@ -111,7 +110,7 @@ func main(){
 
         // Create a syslog writer for logging local or remote
 	if configuration.Localonly{
-	        logger, err := syslog.New(syslog.LOG_NOTICE, "Aba")
+	        logger, err := syslog.New(syslog.LOG_NOTICE, "Abe")
                 if err == nil {
                 	log.SetOutput(logger)
 		} else {
@@ -119,7 +118,7 @@ func main(){
 		}
         }else {
         	logger, err := syslog.Dial(configuration.Syslogproto, configuration.Sysloghost +
-			":" + configuration.Syslogport, syslog.LOG_NOTICE, "Aba")
+			":" + configuration.Syslogport, syslog.LOG_NOTICE, "Abe")
                 	if err == nil {
                 	log.SetOutput(logger)
         	}else{
@@ -129,8 +128,8 @@ func main(){
 	
 
 	// Create the notification watches
-	if configuration.Server == false {
-		for _,item := range configuration.Paths {
+	if configuration.Servermode == false {
+		for _,item := range configuration.Directories {
 		
 			// Check if item exists and is a directory otherwise bailout
 			fd, err := os.Stat(item)
@@ -157,7 +156,9 @@ func main(){
 			event := ei.Event().String()
 			if !sanatize(path, configuration){
 				debugerr("ignored path is:", path, configuration)
+					
 			} else {
+				fmt.Println("else loop")
 				hash, err := hashwithSha256(path, configuration)
 				if err != nil {
 					// Can't hash the data

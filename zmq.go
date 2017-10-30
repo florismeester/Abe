@@ -49,7 +49,7 @@ func  publisher(configuration Configuration){
 func subscriber (configuration Configuration){
 
 	// fixme: Add the public keys of clients, this should be fixed to a better solution
-	for _,pub := range configuration.Clientkeys{
+	for _,pub := range configuration.Server.Clientkeys{
 		zmq.AuthCurveAdd(configuration.Domain, pub)
 	}
 	

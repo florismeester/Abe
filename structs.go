@@ -10,39 +10,49 @@ import (
 
 
 
+type Files struct {
+
+	Path string
+	Filter []string
+}
+
+type ServerType struct {
+
+	Tablename string
+	Dbname string
+	Dbuser string
+	Dbpass string
+	Clientkeys []string
+	Sender string
+	Smtp string
+	Smtpport int
+	Subject string
+}	
 
 type Configuration struct {
 
 	Sysloghost string
-	Tablename string
 	Hostid string
 	Syslogproto string
 	Syslogport string
 	Stdout bool
 	Localonly bool
-	Paths []string
-	Ignoresuffix []string
-	Ignoreprefix []string
 	Public string
 	Secret string
-	Clientkeys []string
 	Messageport string
 	Serveraddr string
 	Domain string
 	Network string
-	Dbname string
-	Dbuser string
-	Dbpass string
 	Debug bool
 	Destructive bool
 	Notify string
-	Sender string
-	Subject string
-	Smtp string
-	Smtpport int
-	Server bool
-	Logfiles []string
-	Logfilter []string
+	Servermode bool
+	Logfiles []Files	
+	Directories []string
+	Suffixes []string
+	Filters []string
+	Server ServerType
+	
 }
 
 

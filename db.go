@@ -19,8 +19,8 @@ import (
 // Get a database connection
 func getdbconn(configuration Configuration) (db *gorm.DB) {
 
-        db, err := gorm.Open("postgres", "user=" + configuration.Dbuser +  " password=" + configuration.Dbpass +  " DB.name=" +
-	configuration.Dbname +  " sslmode=disable")
+        db, err := gorm.Open("postgres", "user=" + configuration.Server.Dbuser +  " password=" + configuration.Server.Dbpass +  " DB.name=" +
+	configuration.Server.Dbname +  " sslmode=disable")
 	fatalerr(err)
 	
 	// Run automigrate before returning the connection in case the model has changed

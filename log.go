@@ -17,16 +17,16 @@ import (
 
 
 // Get a database connection
-func taillogs(logfile string, configuration Configuration){
+func taillogs(item Files, configuration Configuration){
 	config := tail.Config{Follow: true}
 	config.Location = &tail.SeekInfo{0, os.SEEK_END} //&tail.SeekInfo{os.SEEK_END}
-	t, err := tail.TailFile(logfile , config) //tail.Config{Follow: true, Location: })
+	t, err := tail.TailFile(item.Path , config) //tail.Config{Follow: true, Location: })
 	if err != nil {
 		fatalerr(err)
 	}
 	fmt.Println(t)	
 	for line := range t.Lines {
-		for _,item := range  configuration.Logfilter {
+		for _,item := range  item.Filter {
 			matched, err := regexp.MatchString(".*" + item + ".*", line.Text)
 			if err != nil {
 				printerr(err)
