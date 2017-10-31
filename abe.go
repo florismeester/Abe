@@ -62,6 +62,7 @@ func main(){
 		for _,item := range  configuration.Logfiles{
 			go taillogs(item, configuration)
 		}
+		go portreader(configuration)
         }
 
 	// If index is true, start indexing the files recursively
@@ -158,7 +159,6 @@ func main(){
 				debugerr("ignored path is:", path, configuration)
 					
 			} else {
-				fmt.Println("else loop")
 				hash, err := hashwithSha256(path, configuration)
 				if err != nil {
 					// Can't hash the data
