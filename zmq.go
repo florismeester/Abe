@@ -91,7 +91,7 @@ func subscriber (configuration Configuration){
 				fmt.Println("receiver Event", hashdata.Event, hashdata.Filename)
 			}
 			// just send a notification, no persistence
-			fmt.Println("attrib or log:" + hashdata.Filename)
+			stdoutlog("attrib or log:" + hashdata.Filename, configuration)
 			sendemail(configuration, hashdata)
 		}else {
                        	// If validated marshal and commit

@@ -1,4 +1,5 @@
-netlink messages
 heartbeat
-netstat
+netstat /proc/net/tcp en udp
+lkm   /proc/modules
 mem/cpu stuff
+ld_preload

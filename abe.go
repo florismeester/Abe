@@ -10,7 +10,7 @@ import (
 	"flag"
 	"os"
     	"path/filepath"
-	"fmt"
+//	"fmt"
 	"log/syslog"
 	"sync"
 )
@@ -62,7 +62,9 @@ func main(){
 		for _,item := range  configuration.Logfiles{
 			go taillogs(item, configuration)
 		}
-		go portreader(configuration)
+		go tcpportreader(configuration)
+		go udpportreader(configuration)
+		go lkmreader(configuration)
         }
 
 	// If index is true, start indexing the files recursively
@@ -192,9 +194,7 @@ func main(){
 			
 				}
 			}
-			if configuration.Stdout {
-				fmt.Println(ei)
-			}
+				stdoutlog(ei, configuration)
 		}
 	}
 	wg.Wait()

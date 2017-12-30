@@ -52,6 +52,7 @@ type Configuration struct {
 	Suffixes []string
 	Filters []string
 	Server ServerType
+	Sleep int
 	
 }
 

@@ -4,7 +4,7 @@ package main
    @author Floris Meester floris.meester@gmail.com */
 
 import (
-	"fmt"
+//	"fmt"
         _ "github.com/lib/pq"
 	"github.com/jinzhu/gorm"
 	json "encoding/json"
@@ -101,7 +101,7 @@ func commitmessage(configuration Configuration, hashdata []byte, db *gorm.DB){
 	if configuration.Debug == true {
 		var result Hashdata
 		db.Last(&result)
-		fmt.Println("Last db commit:", result)
+		stdoutlog(result, configuration)
 	}
 	//isit, err := comparemessage(configuration, hashdata, db)
 	//fmt.Println("ISIT:", isit, err)

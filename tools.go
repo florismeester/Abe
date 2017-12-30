@@ -57,14 +57,20 @@ func sendemail(configuration Configuration, hashdata Hashdata) {
 		event = "Write"
 	} else if hashdata.Event == "syslog" {
 		event = "Log"
+	} else if hashdata.Event == "tcpport" {
+		event = "New TCP listening port"
+	} else if hashdata.Event == "udpport" {
+		event = "New UDP listening port"
+	} else if hashdata.Event == "lkm" {
+		event = "New Kernel module loaded"
 	}
        
 	
 	mail.Sender = configuration.Server.Sender
 	mail.To =  hashdata.Notify
-	mail.Subject = configuration.Server.Subject
+	mail.Subject = configuration.Server.Subject + " for " + hashdata.Hostname 
 	mail.Body = "This the Abe system to inform you about the following incident:\n" +
-	"The system noticed a " + event + " event.\n" + "Output: " + hashdata.Filename
+	"The system noticed a " + event + " event on " + hashdata.Hostname + " \n" + "Output: " + hashdata.Filename
 
 	message := gomail.NewMessage()
 	message.SetHeader("From", mail.Sender)

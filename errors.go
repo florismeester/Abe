@@ -36,3 +36,10 @@ func debugerr(comment string, data interface{}, configuration Configuration){
                 log.Print(comment, data)
 	}
 }
+
+func stdoutlog(data interface{}, configuration Configuration){
+
+	if configuration.Stdout{
+		fmt.Println(data)
+	}
+}

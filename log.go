@@ -8,7 +8,7 @@ import (
 	"os"
 	"encoding/json"
 	"regexp"
-	"fmt"
+	//"fmt"
 	
 
 )
@@ -24,14 +24,13 @@ func taillogs(item Files, configuration Configuration){
 	if err != nil {
 		fatalerr(err)
 	}
-	fmt.Println(t)	
+	stdoutlog(t, configuration)	
 	for line := range t.Lines {
 		for _,item := range  item.Filter {
 			matched, err := regexp.MatchString(".*" + item + ".*", line.Text)
 			if err != nil {
 				printerr(err)
 			}else if matched == true {
-				fmt.Println(item, line.Text)
                			// send on channel zmq 
                			var hashdata Hashdata
                			hashdata.Hostname = configuration.Hostid
