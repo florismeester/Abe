@@ -1,6 +1,6 @@
 package main
 
-/* Database actions for ABA
+/* Database actions for ABE
    @author Floris Meester floris.meester@gmail.com */
 
 import (
