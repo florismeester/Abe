@@ -4,6 +4,6 @@ difference that it stores hashes in a Postgresql database and reports changes
 through email and syslog.
 It uses filesystem watches for detecting changes.
 Some more work has to be done on the loadable kernel modules checks and
-several network checks. (definetly not ellegant)
+several network port checks. (definitely not ellegant)
 
 BTW it's far from finished, but it works....
