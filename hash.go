@@ -1,6 +1,6 @@
 package main
 
-/* Hashing function for ABA
+/* Hashing function for ABE
    @author Floris Meester floris.meester@gmail.com */
 
 import (
